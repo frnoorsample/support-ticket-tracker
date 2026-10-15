@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -22,3 +24,35 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+Priority = Literal["low", "medium", "high"]
+Status = Literal["open", "in_progress", "resolved", "closed"]
+
+
+class TicketCreate(BaseModel):
+    title: str = Field(min_length=3, max_length=100)
+    description: str = Field(min_length=1, max_length=2000)
+    priority: Priority = "medium"
+
+
+class TicketUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=3, max_length=100)
+    description: str | None = Field(default=None, min_length=1, max_length=2000)
+    priority: Priority | None = None
+
+
+class StatusUpdate(BaseModel):
+    status: Status
+
+
+class TicketOut(BaseModel):
+    id: int
+    title: str
+    description: str
+    category: str
+    priority: str
+    status: str
+    created_by: int
+    created_at: str
+    updated_at: str
